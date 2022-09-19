@@ -10,6 +10,43 @@ public class GamePlay extends Teams {
 	    int rnd = new Random().nextInt(array.length);
 	    return array[rnd];
 	}
+	static int[][] bowlers = {{7,0},{8,0},{9,0},{10,0},{11,0}};
+	static int previous=-1;
+	public static int getRandom(int[][] array, int balls) {
+	    int rnd = new Random().nextInt(array.length);
+	    int count;
+	    if(balls==60) {
+	    	if(previous!=rnd) {
+	    		if(array.length==1) {
+	    			return array[rnd][0];
+	    		}
+	    		if(array[rnd][1]==2 ) {
+		    		int[][] remainingBowler = new int[bowlers.length-1][2];
+		    		int j=0;
+		    		for(int i=0;i<bowlers.length;i++) {
+		    			if(i!=rnd) {
+		    				remainingBowler[j][0]=bowlers[i][0];
+		    				remainingBowler[j][1]=bowlers[i][1];
+		    				j++;
+		    			}
+		    		}
+		    		bowlers=remainingBowler;
+		    		previous=-1;
+		    		getRandom(bowlers, 60);
+		    	}
+	    		else {
+	    			previous=rnd;
+		    		count=array[rnd][1]+1;
+		    		array[rnd][1]=count;
+		    		return array[rnd][0];
+	    		}
+	    	}
+	    	else {
+	    		getRandom(bowlers, 60);
+	    	}
+	    }
+	    return array[rnd][0];
+	}
 	
 	public static int getRandom(int[] array) {
 	    int rnd = new Random().nextInt(array.length);
@@ -69,11 +106,24 @@ public class GamePlay extends Teams {
 		}
 	}
 	
-	public static void matchStart(int over) {
+	public static void matchStart(int over, int bat) {
 		int balls = over*6;
 		int innings1=1, innings2=2;
-		play(balls, innings1, teamoneplayerdetails, teamtwoplayerdetails);
-		play(balls, innings2, teamtwoplayerdetails, teamoneplayerdetails);
+		HashMap<Integer, PojoClass> batting = new HashMap<Integer, PojoClass>();
+		int[][] bowlers2 = {{7,0},{8,0},{9,0},{10,0},{11,0}};
+		if(bat==1) {
+			play(balls, innings1, teamoneplayerdetails, teamtwoplayerdetails);
+			bowlers = bowlers2;
+			play(balls, innings2, teamtwoplayerdetails, teamoneplayerdetails);
+		}
+		else {
+			play(balls, innings1, teamtwoplayerdetails, teamoneplayerdetails);
+			bowlers=bowlers2;
+			play(balls, innings2, teamoneplayerdetails, teamtwoplayerdetails);
+			batting=teamtwoplayerdetails;
+			teamtwoplayerdetails=teamoneplayerdetails;
+			teamoneplayerdetails=batting;
+		}
 		scoreBoard();
 	}
 	
@@ -81,12 +131,13 @@ public class GamePlay extends Teams {
 		
 		ArrayList<String> sixballs = new ArrayList<String>();
 		int ballcount=1, temp=2, batsman=2, totalscore=0, batscore=0, rungiven=0, overcount=1, wicketcount=0;
-		int ballsfaced=0, fourscount=0, sixcount=0;
+		int ballsfaced=0, fourscount=0, sixcount=0, wickettake=0;
 		float strikerate=0f;
 		String run;
-		String[] bowl = {"0","1","2","3","4","6","W"};
-		int[] bowlers = {7,8,9,10,11};
-		int bowler = getRandom(bowlers);
+		String[] bowlOne = {"0","1","2","3","4","6","W","wd","Nb"};
+		String[] bowlTwo = {"0","1","2","3","4","6","wd","Nb"};
+		
+		int bowler = getRandom(bowlers, balls);
 		int[] striker = {1,2};
 		
 		while(ballcount<=balls && wicketcount<11) {
@@ -107,7 +158,19 @@ public class GamePlay extends Teams {
 				bothteamScores[2]=totalscore;
 				bothteamScores[3]=wicketcount;
 			}
-			run=getRandom(bowl);
+			if(sixballs.size()!=0) {
+				if(sixballs.get(sixballs.size()-1).equals("Nb")){
+					run=getRandom(bowlTwo);
+				}
+				else {
+					run=getRandom(bowlOne);
+				}
+			}
+			else {
+				run=getRandom(bowlOne);
+			}
+			
+			
 			if("0".equals(run)) {
 				sixballs.add(run);
 				ballsfaced=teambat.get(striker[0]).getBallfaced()+1;
@@ -197,26 +260,26 @@ public class GamePlay extends Teams {
 					striker[1]=temp;
 				}
 			}
-			/*else if("wd".equals(run)) {
+			else if("wd".equals(run)) {
 				totalscore+=1;
 				sixballs.add(run);
 				rungiven=teambowl.get(bowler).getBowlscore()+1;
 				teambowl.get(bowler).setBowlscore(rungiven);
-				ballcount--;
 			}
 			else if("Nb".equals(run)) {
 				totalscore+=1;
 				sixballs.add(run);
 				rungiven=teambowl.get(bowler).getBowlscore()+1;
 				teambowl.get(bowler).setBowlscore(rungiven);
-				ballcount--;
-			}*/
+			}
 			else if("W".equals(run)) {
 				sixballs.add(run);
 				ballsfaced=teambat.get(striker[0]).getBallfaced()+1;
 				teambat.get(striker[0]).setBallfaced(ballsfaced);
-				strikerate=((teambat.get(striker[0]).getBatscore())*100)/(teambat.get(striker[0]).getBallfaced());
+				strikerate=(((float)teambat.get(striker[0]).getBatscore())*100f)/((float)teambat.get(striker[0]).getBallfaced());
 				teambat.get(striker[0]).setStrikerate(strikerate);
+				wickettake=teambowl.get(bowler).getWickettaken()+1;
+				teambowl.get(bowler).setWickettaken(wickettake);
 				batsman+=1;
 				striker[0]=batsman;
 				wicketcount+=1;
@@ -238,17 +301,18 @@ public class GamePlay extends Teams {
 					return;
 				}
 			}
-			
-			if(ballcount%6==0) {
-				if(innings==1) {
-					teamonescores.put(overcount, sixballs);
+			if(!"Nb".equals(run) && !"wd".equals(run)) {
+				if(ballcount%6==0) {
+					if(innings==1) {
+						teamonescores.put(overcount, sixballs);
+					}
+					else {
+						teamtwoscores.put(overcount, sixballs);
+					}
+					overcount++;
+					sixballs = new ArrayList<String>();
+					bowler = getRandom(bowlers, balls);
 				}
-				else {
-					teamtwoscores.put(overcount, sixballs);
-				}
-				overcount++;
-				sixballs = new ArrayList<String>();
-				bowler = getRandom(bowlers);	
 			}
 			
 			if(innings==1 && (ballcount==balls || wicketcount<11)){
@@ -258,7 +322,7 @@ public class GamePlay extends Teams {
 			
 			if(ballcount==balls) {
 				if(teambat.get(striker[0]).getBallfaced()>0) {
-					strikerate=((teambat.get(striker[0]).getBatscore())*100)/(teambat.get(striker[0]).getBallfaced());
+					strikerate=(((float)teambat.get(striker[0]).getBatscore())*100F)/((float)teambat.get(striker[0]).getBallfaced());
 					teambat.get(striker[0]).setStrikerate(strikerate);
 				}
 				if(teambat.get(striker[1]).getBallfaced()>0) {
@@ -266,8 +330,9 @@ public class GamePlay extends Teams {
 					teambat.get(striker[1]).setStrikerate(strikerate);
 				}
 			}
-			
-			ballcount++;
+			if(!"Nb".equals(run) && !"wd".equals(run)) {
+				ballcount++;
+			}
 		}
 	}
 	
