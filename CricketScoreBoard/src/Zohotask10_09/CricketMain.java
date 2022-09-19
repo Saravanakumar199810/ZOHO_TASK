@@ -12,6 +12,7 @@ public class CricketMain {
 			boolean teamselection = true;
 			boolean tossing = true;
 			int[] allteams = { 1, 2, 3, 4, 5, 6 };
+			int bat=2;
 			String[] teamonecap = {"",""}, teamtwocap= {"",""};
 			String[] toss = {"Heads", "Tails"};
 			String[] choice = {"Bat","Bowl"};
@@ -61,18 +62,25 @@ public class CricketMain {
 							System.out.println("\n"+teamonecap[0]+" own the toss");
 							System.out.println("\nSelect \n1.Bating \n2.Bowling");
 							int playchoice=sc.nextInt();
+							bat=playchoice;
 							String play=GamePlay.playingChoice(playchoice);
 							System.out.println("\n"+teamonecap[1]+" own the toss and selected to "+play+"\n");
-							GamePlay.matchStart(overs);
 							tossing=false;
+							GamePlay.matchStart(overs, bat);
 						}
 						else {
 							int[] batbowl= {1,2};
 							int playchoice = GamePlay.getRandom(batbowl);
+							if(playchoice==1) {
+								bat=2;
+							}
+							else {
+								bat=1;
+							}
 							String play=GamePlay.playingChoice(playchoice);
 							System.out.println("\n"+teamtwocap[1]+" own the toss and selected to "+play+"\n");
-							GamePlay.matchStart(overs);
 							tossing=false;
+							GamePlay.matchStart(overs, bat);
 						}
 
 					} else {
@@ -85,23 +93,29 @@ public class CricketMain {
 					if(selectedtoss.equals(""+luck.charAt(0))) {
 						int[] batbowl= {1,2};
 						int playchoice = GamePlay.getRandom(batbowl);
+						if(playchoice==1) {
+							bat=2;
+						}
+						else {
+							bat=1;
+						}
 						String play=GamePlay.playingChoice(playchoice);
 						System.out.println("\n"+teamtwocap[1]+" own the toss and selected to "+play);
-						GamePlay.matchStart(overs);
 						tossing=false;
+						GamePlay.matchStart(overs, bat);
 					}
 					else {
 						System.out.println("\n"+teamonecap[0]+" own the toss");
 						System.out.println("\nSelect \n1.Bating \n2.Bowling");
 						int playchoice=sc.nextInt();
+						bat=playchoice;
 						String play=GamePlay.playingChoice(playchoice);
 						System.out.println("\n"+teamonecap[1]+" own the toss and selected to "+play);
-						GamePlay.matchStart(overs);
 						tossing=false;
+						GamePlay.matchStart(overs, bat);
 					}
-				}
+				}	
 			}
-
 		} catch (Exception e) {
 			System.out.println(e);
 		}
