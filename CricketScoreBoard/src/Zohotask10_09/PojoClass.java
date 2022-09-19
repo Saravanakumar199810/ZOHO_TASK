@@ -9,7 +9,6 @@ public class PojoClass {
 	private int fours;
 	private int sixes;
 	private float strikerate;
-	private int economy;
 	private int ballfaced;
 	private int oversbowled;
 	private int wickettaken;
@@ -58,12 +57,6 @@ public class PojoClass {
 	}
 	public void setStrikerate(float strikerate) {
 		this.strikerate = strikerate;
-	}
-	public int getEconomy() {
-		return economy;
-	}
-	public void setEconomy(int economy) {
-		this.economy = economy;
 	}
 	public int getBallfaced() {
 		return ballfaced;
