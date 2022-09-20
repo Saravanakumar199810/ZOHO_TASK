@@ -10,43 +10,6 @@ public class GamePlay extends Teams {
 	    int rnd = new Random().nextInt(array.length);
 	    return array[rnd];
 	}
-	static int[][] bowlers = {{7,0},{8,0},{9,0},{10,0},{11,0}};
-	static int previous=-1;
-	public static int getRandom(int[][] array, int balls) {
-	    int rnd = new Random().nextInt(array.length);
-	    int count;
-	    if(balls==60) {
-	    	if(previous!=rnd) {
-	    		if(array.length==1) {
-	    			return array[rnd][0];
-	    		}
-	    		if(array[rnd][1]==2 ) {
-		    		int[][] remainingBowler = new int[bowlers.length-1][2];
-		    		int j=0;
-		    		for(int i=0;i<bowlers.length;i++) {
-		    			if(i!=rnd) {
-		    				remainingBowler[j][0]=bowlers[i][0];
-		    				remainingBowler[j][1]=bowlers[i][1];
-		    				j++;
-		    			}
-		    		}
-		    		bowlers=remainingBowler;
-		    		previous=-1;
-		    		getRandom(bowlers, 60);
-		    	}
-	    		else {
-	    			previous=rnd;
-		    		count=array[rnd][1]+1;
-		    		array[rnd][1]=count;
-		    		return array[rnd][0];
-	    		}
-	    	}
-	    	else {
-	    		getRandom(bowlers, 60);
-	    	}
-	    }
-	    return array[rnd][0];
-	}
 	
 	public static int getRandom(int[] array) {
 	    int rnd = new Random().nextInt(array.length);
@@ -110,15 +73,12 @@ public class GamePlay extends Teams {
 		int balls = over*6;
 		int innings1=1, innings2=2;
 		HashMap<Integer, PojoClass> batting = new HashMap<Integer, PojoClass>();
-		int[][] bowlers2 = {{7,0},{8,0},{9,0},{10,0},{11,0}};
 		if(bat==1) {
 			play(balls, innings1, teamoneplayerdetails, teamtwoplayerdetails);
-			bowlers = bowlers2;
 			play(balls, innings2, teamtwoplayerdetails, teamoneplayerdetails);
 		}
 		else {
 			play(balls, innings1, teamtwoplayerdetails, teamoneplayerdetails);
-			bowlers=bowlers2;
 			play(balls, innings2, teamoneplayerdetails, teamtwoplayerdetails);
 			batting=teamtwoplayerdetails;
 			teamtwoplayerdetails=teamoneplayerdetails;
@@ -137,7 +97,7 @@ public class GamePlay extends Teams {
 		String[] bowlOne = {"0","1","2","3","4","6","W","wd","Nb"};
 		String[] bowlTwo = {"0","1","2","3","4","6","wd","Nb"};
 		
-		int bowler = getRandom(bowlers, balls);
+		int bowler = 7;
 		int[] striker = {1,2};
 		
 		while(ballcount<=balls && wicketcount<11) {
@@ -152,6 +112,7 @@ public class GamePlay extends Teams {
 						strikerate=((teambat.get(striker[1]).getBatscore())*100)/(teambat.get(striker[1]).getBallfaced());
 						teambat.get(striker[1]).setStrikerate(strikerate);
 					}
+					//sixballs.add(teambowl.get(bowler).getName());
 					teamtwoscores.put(overcount, sixballs);
 					return;
 				}
@@ -276,7 +237,7 @@ public class GamePlay extends Teams {
 				sixballs.add(run);
 				ballsfaced=teambat.get(striker[0]).getBallfaced()+1;
 				teambat.get(striker[0]).setBallfaced(ballsfaced);
-				strikerate=(((float)teambat.get(striker[0]).getBatscore())*100f)/((float)teambat.get(striker[0]).getBallfaced());
+				strikerate=(((float)teambat.get(striker[0]).getBatscore())*100)/((float)teambat.get(striker[0]).getBallfaced());
 				teambat.get(striker[0]).setStrikerate(strikerate);
 				wickettake=teambowl.get(bowler).getWickettaken()+1;
 				teambowl.get(bowler).setWickettaken(wickettake);
@@ -292,6 +253,7 @@ public class GamePlay extends Teams {
 					bothteamScores[3]=wicketcount;
 				}
 				if(wicketcount==10) {
+					//sixballs.add(teambowl.get(bowler).getName());
 					if(innings==1) {
 						teamonescores.put(overcount, sixballs);
 					}
@@ -303,6 +265,7 @@ public class GamePlay extends Teams {
 			}
 			if(!"Nb".equals(run) && !"wd".equals(run)) {
 				if(ballcount%6==0) {
+					//sixballs.add(teambowl.get(bowler).getName());
 					if(innings==1) {
 						teamonescores.put(overcount, sixballs);
 					}
@@ -311,7 +274,10 @@ public class GamePlay extends Teams {
 					}
 					overcount++;
 					sixballs = new ArrayList<String>();
-					bowler = getRandom(bowlers, balls);
+					bowler +=1;
+					if(bowler==12) {
+						bowler=7;
+					}
 				}
 			}
 			
@@ -321,8 +287,9 @@ public class GamePlay extends Teams {
 			}
 			
 			if(ballcount==balls) {
+				//sixballs.add(teambowl.get(bowler).getName());
 				if(teambat.get(striker[0]).getBallfaced()>0) {
-					strikerate=(((float)teambat.get(striker[0]).getBatscore())*100F)/((float)teambat.get(striker[0]).getBallfaced());
+					strikerate=(((float)teambat.get(striker[0]).getBatscore())*100)/((float)teambat.get(striker[0]).getBallfaced());
 					teambat.get(striker[0]).setStrikerate(strikerate);
 				}
 				if(teambat.get(striker[1]).getBallfaced()>0) {
