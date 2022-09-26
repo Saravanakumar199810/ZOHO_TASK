@@ -1,4 +1,4 @@
-package Zohotask10_09;
+package CricketScoreBoard;
 
 public class PojoClass {
 	
