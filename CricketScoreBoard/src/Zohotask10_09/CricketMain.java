@@ -1,4 +1,4 @@
-package Zohotask10_09;
+package CricketScoreBoard;
 
 import java.util.Scanner;
 import java.util.Arrays;
@@ -11,28 +11,44 @@ public class CricketMain {
 		try {
 			boolean teamselection = true;
 			boolean tossing = true;
-			int[] allteams = { 1, 2, 3, 4, 5, 6 };
-			int bat=2;
+			boolean overselection = true;
+			
+			int[] choice1 = { 1, 2, 3, 4, 5, 6 };
+			int[] choice2 = { 1, 2, 3, 4, 5 };
+			int bat=2, overs=0;
 			String[] teamonecap = {"",""}, teamtwocap= {"",""};
 			String[] toss = {"Heads", "Tails"};
 			String[] choice = {"Bat","Bowl"};
 			
-			System.out.println("\nSelect Overs \n1.ten \n2.twenty");
-			int value = sc.nextInt();
-			System.out.println();
-			int overs = GamePlay.overs(value);
+			while(overselection) {
+				System.out.println("\nSelect Overs \n1.ten \n2.twenty \n3.YourChoice");
+				int value = sc.nextInt();
+				if(value==3) {
+					System.out.println("Enter the number of overs : ");
+					overs =sc.nextInt();
+					System.out.println();
+					overselection=false;
+				}
+				else if(value==1 || value==2) {
+					System.out.println();
+					overs = GamePlay.overs(value);
+					overselection=false;
+				}
+				else {
+					System.out.println("\nPlease select correct option\n");
+				}
+			}
 			
 			while (teamselection) {
-				System.out.println(
-						"Team1 choice : \n1.India \n2.Srilanka \n3.Bangaladesh \n4.Afganishtan \n5.Pakistan \n6.HongKong  ");
+				Teams.teamChoice(-1);
 				int team1choice = sc.nextInt();
-				System.out.println(
-						"\nTeam2 choice : \n1.India \n2.Srilanka \n3.Bangaladesh \n4.Afganishtan \n5.Pakistan \n6.HongKong  ");
+				System.out.println();
+				Teams.teamChoice(team1choice);
 				int team2choice = sc.nextInt();
 				
 				System.out.println();
-				if (team1choice != team2choice && Arrays.toString(allteams).contains("" + team1choice)
-						&& Arrays.toString(allteams).contains("" + team2choice)) {
+				if (Arrays.toString(choice1).contains("" + team1choice)
+						&& Arrays.toString(choice2).contains("" + team2choice)) {
 					teamonecap = GamePlay.teamSelection(team1choice);
 					System.out.print(" VS ");
 					teamtwocap = GamePlay.teamSelection(team2choice);
