@@ -1,4 +1,4 @@
-package Zohotask10_09;
+package CricketScoreBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,37 @@ public class Teams {
 	static HashMap<Integer, ArrayList<String>> teamtwoscores = new HashMap<Integer, ArrayList<String>>();
 	static HashMap<Integer, PojoClass> teamoneplayerdetails = new HashMap<Integer, PojoClass>();
 	static HashMap<Integer, PojoClass> teamtwoplayerdetails = new HashMap<Integer, PojoClass>();
-
+	
+	
+	public static void teamChoice(int firstChoice) {
+		int i = 1;
+		System.out.println("Team Choice : ");
+		if(firstChoice!=1) {
+			System.out.println(i+" India");
+			i++;
+		}
+		if(firstChoice!=2) {
+			System.out.println(i+" Srilanka");
+			i++;
+		}
+		if(firstChoice!=3) {
+			System.out.println(i+" Bangaladesh");
+			i++;
+		}
+		if(firstChoice!=4) {
+			System.out.println(i+" Afganishtan");
+			i++;
+		}
+		if(firstChoice!=5) {
+			System.out.println(i+" Pakistan");
+			i++;
+		}
+		if(firstChoice!=6) {
+			System.out.println(i+" HongKong");
+			i++;
+		}
+	}
+	
 	public static String[] teamIndiaeleven() {
 		String[] indeleven = { "Rohit", "Kohli", "Rahul", "Surya", "Pant", "Hardik", "Jadeja", "Bhuvi", "Shami",
 				"Bumrah", "Chahal" };
