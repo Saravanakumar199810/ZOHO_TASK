@@ -1,4 +1,4 @@
-package Zohotask10_09;
+package CricketScoreBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,27 @@ public class GamePlay extends Teams {
 	    return array[rnd];
 	}
 	
+	static int first=0, value;
 	public static String[] teamSelection(int num){
+		if(first==1) {
+			if(value<num && value==1) {
+				num=num+value;
+			}
+			else if(value<num && value==2 ) {
+				num=num+value-1;
+			}
+			else if(value<num && value==4 ) {
+				num=num+1;
+			}
+			else if(value<num) {
+				num=num+value-2;
+			}
+			else if(value==num) {
+				num=num+1;
+			}
+		}
+		first++;
+		value=num;
 		switch(num) {
 		case 1:
 			System.out.print("Team India");
@@ -37,7 +57,7 @@ public class GamePlay extends Teams {
 			System.out.print("Team HongKong");
 			return teamHongKongeleven();
 		default:
-			return teamIndiaeleven();
+			return null;
 		}
 	}
 	
